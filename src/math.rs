@@ -9,7 +9,7 @@ pub struct Vec3f {
 
 impl Vec3f {
     pub fn mag_squared(self) -> f32 {
-        self.x * self.x + self.y * self.y + self.z * self.z
+        self.dot(self)
     }
 
     pub fn mag(self) -> f32 {
