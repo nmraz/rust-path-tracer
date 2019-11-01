@@ -19,6 +19,10 @@ impl Vec3f {
     pub fn dot(self, rhs: Vec3f) -> f32 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
+
+    pub fn to_norm(self) -> Vec3f {
+        self / self.mag()
+    }
 }
 
 impl Add for Vec3f {
