@@ -74,7 +74,7 @@ impl Div<f32> for Vec3 {
 }
 
 #[derive(Debug, Copy, Clone)]
-struct Ray {
+pub struct Ray {
     origin: Vec3,
     dir: Vec3,
 }
