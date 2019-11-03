@@ -1,5 +1,4 @@
 mod math;
+mod prim;
 
-fn main() {
-    println!("Hello, world!");
-}
+fn main() {}
