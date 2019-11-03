@@ -72,3 +72,30 @@ impl Div<f32> for Vec3 {
         }
     }
 }
+
+#[derive(Debug, Copy, Clone)]
+struct Ray {
+    origin: Vec3,
+    dir: Vec3,
+}
+
+impl Ray {
+    pub fn new(origin: &Vec3, dir: &Vec3) -> Ray {
+        Ray {
+            origin: *origin,
+            dir: dir.to_unit(),
+        }
+    }
+
+    pub fn origin(&self) -> &Vec3 {
+        &self.origin
+    }
+
+    pub fn dir(&self) -> &Vec3 {
+        &self.dir
+    }
+
+    pub fn interp(&self, t: f32) -> Vec3 {
+        self.origin + t * self.dir
+    }
+}
