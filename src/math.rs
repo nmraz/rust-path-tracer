@@ -2,6 +2,10 @@ use std::ops::{Add, Div, Mul, Neg, Sub};
 
 pub const EPSILON: f64 = 1e-9;
 
+pub fn nearly_equal(a: f64, b: f64) -> bool {
+    (a - b).abs() < EPSILON * a.abs()
+}
+
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f64,
