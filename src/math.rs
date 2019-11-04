@@ -1,6 +1,6 @@
 use std::ops::{Add, Div, Mul};
 
-pub const EPSILON: f64 = 1e-4;
+pub const EPSILON: f64 = 1e-9;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
