@@ -10,6 +10,7 @@ pub trait Geom {
     fn intersection_info_at(&self, point: Vec3, ray: &Ray) -> IntersectionInfo;
 }
 
+#[derive(Copy, Clone)]
 pub struct Sphere {
     center: Vec3,
     radius: f64,
