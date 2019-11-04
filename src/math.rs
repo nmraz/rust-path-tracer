@@ -15,10 +15,18 @@ pub struct Vec3 {
 
 #[derive(Debug, Copy, Clone)]
 pub struct Unit3 {
-    pub(in crate::math) vec: Vec3,
+    vec: Vec3,
 }
 
 impl Unit3 {
+    pub fn from_unit_vec3(vec: Vec3) -> Unit3 {
+        debug_assert!(
+            nearly_equal(vec.mag_squared(), 1.0),
+            "Illegal construction of Unit3"
+        );
+        Unit3 { vec }
+    }
+
     pub fn x(&self) -> f64 {
         self.vec.x
     }
@@ -46,13 +54,17 @@ impl Vec3 {
     pub fn to_unit(self) -> Unit3 {
         let mag = self.mag();
         assert!(mag < EPSILON, "Normalizing zero vector");
-        Unit3 { vec: self / mag }
+        Unit3::from_unit_vec3(self / mag)
     }
 }
 
 impl From<Unit3> for Vec3 {
     fn from(u: Unit3) -> Vec3 {
-        u.vec
+        Vec3 {
+            x: u.x(),
+            y: u.y(),
+            z: u.z(),
+        }
     }
 }
 
