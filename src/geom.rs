@@ -17,6 +17,7 @@ pub struct Sphere {
 
 impl Sphere {
     pub fn new(center: Vec3, radius: f64) -> Sphere {
+        assert!(radius > 0.0, "Invalid sphere radius");
         Sphere { center, radius }
     }
 
