@@ -7,5 +7,5 @@ pub struct Intersection {
 }
 
 pub trait Geom {
-    fn try_intersect(&self, ray: &mut Ray) -> Option<Intersection>;
+    fn intersect(&self, ray: &Ray) -> Option<Intersection>;
 }
