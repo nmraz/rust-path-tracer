@@ -19,6 +19,14 @@ impl Primitive {
             material,
         }
     }
+
+    pub fn geom(&self) -> &dyn Geom {
+        self.geom.as_ref()
+    }
+
+    pub fn material(&self) -> &Material {
+        &self.material
+    }
 }
 
 pub struct Scene {
