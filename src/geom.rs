@@ -1,4 +1,4 @@
-use crate::math::{Ray, Unit3, Vec3, EPSILON};
+use crate::math::{nearly_equal, Ray, Unit3, Vec3, EPSILON};
 
 pub struct IntersectionInfo {
     normal: Unit3,
@@ -58,6 +58,10 @@ impl Geom for Sphere {
 
     fn intersection_info_at(&self, point: Vec3, ray: &Ray) -> IntersectionInfo {
         let outward = point - self.center;
+        debug_assert!(
+            nearly_equal(outward.mag_squared(), self.radius * self.radius),
+            "Point not on sphere"
+        );
         let inside = outward.dot(ray.dir.into()) > 0.0; // Note: == 0 means tangent, still outside.
         if inside {
             IntersectionInfo {
