@@ -1,10 +1,29 @@
 use std::ops::{Add, Div, Mul};
 
+pub const EPSILON: f32 = 1e-4f32;
+
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
     pub x: f32,
     pub y: f32,
     pub z: f32,
+}
+
+#[derive(Debug, Copy, Clone)]
+pub struct Unit3 {
+    pub(in crate::math) vec: Vec3,
+}
+
+impl Unit3 {
+    pub fn x(&self) -> f32 {
+        self.vec.x
+    }
+    pub fn y(&self) -> f32 {
+        self.vec.y
+    }
+    pub fn z(&self) -> f32 {
+        self.vec.z
+    }
 }
 
 impl Vec3 {
@@ -20,8 +39,16 @@ impl Vec3 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
-    pub fn to_unit(self) -> Vec3 {
-        self / self.mag()
+    pub fn to_unit(self) -> Unit3 {
+        let mag = self.mag();
+        assert!(mag < EPSILON, "Normalizing zero vector");
+        Unit3 { vec: self / mag }
+    }
+}
+
+impl From<Unit3> for Vec3 {
+    fn from(u: Unit3) -> Vec3 {
+        u.vec
     }
 }
 
@@ -75,27 +102,12 @@ impl Div<f32> for Vec3 {
 
 #[derive(Debug, Copy, Clone)]
 pub struct Ray {
-    origin: Vec3,
-    dir: Vec3,
+    pub origin: Vec3,
+    pub dir: Unit3,
 }
 
 impl Ray {
-    pub fn new(origin: &Vec3, dir: &Vec3) -> Ray {
-        Ray {
-            origin: *origin,
-            dir: dir.to_unit(),
-        }
-    }
-
-    pub fn origin(&self) -> &Vec3 {
-        &self.origin
-    }
-
-    pub fn dir(&self) -> &Vec3 {
-        &self.dir
-    }
-
     pub fn interp(&self, t: f32) -> Vec3 {
-        self.origin + t * self.dir
+        self.origin + t * Vec3::from(self.dir)
     }
 }
