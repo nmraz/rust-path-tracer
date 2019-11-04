@@ -6,6 +6,6 @@ pub struct Intersection {
     pub dist: f32,
 }
 
-pub trait Prim {
+pub trait Geom {
     fn try_intersect(&self, ray: &mut Ray) -> Option<Intersection>;
 }

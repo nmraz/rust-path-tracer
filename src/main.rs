@@ -1,4 +1,4 @@
+mod geom;
 mod math;
-mod prim;
 
 fn main() {}
