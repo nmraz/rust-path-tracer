@@ -6,7 +6,7 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
     (a - b).abs() < EPSILON * a.abs()
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,

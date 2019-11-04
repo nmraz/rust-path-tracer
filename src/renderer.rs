@@ -8,11 +8,7 @@ struct SampledPixel {
 impl SampledPixel {
     pub fn new() -> SampledPixel {
         SampledPixel {
-            total: Vec3 {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            },
+            total: Default::default(),
             count: 0,
         }
     }
