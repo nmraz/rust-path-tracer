@@ -1,12 +1,12 @@
 use std::ops::{Add, Div, Mul};
 
-pub const EPSILON: f32 = 1e-4f32;
+pub const EPSILON: f64 = 1e-4;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3 {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -15,27 +15,27 @@ pub struct Unit3 {
 }
 
 impl Unit3 {
-    pub fn x(&self) -> f32 {
+    pub fn x(&self) -> f64 {
         self.vec.x
     }
-    pub fn y(&self) -> f32 {
+    pub fn y(&self) -> f64 {
         self.vec.y
     }
-    pub fn z(&self) -> f32 {
+    pub fn z(&self) -> f64 {
         self.vec.z
     }
 }
 
 impl Vec3 {
-    pub fn mag_squared(self) -> f32 {
+    pub fn mag_squared(self) -> f64 {
         self.dot(self)
     }
 
-    pub fn mag(self) -> f32 {
+    pub fn mag(self) -> f64 {
         self.mag_squared().sqrt()
     }
 
-    pub fn dot(self, rhs: Vec3) -> f32 {
+    pub fn dot(self, rhs: Vec3) -> f64 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
@@ -64,10 +64,10 @@ impl Add for Vec3 {
     }
 }
 
-impl Mul<f32> for Vec3 {
+impl Mul<f64> for Vec3 {
     type Output = Self;
 
-    fn mul(self, rhs: f32) -> Self {
+    fn mul(self, rhs: f64) -> Self {
         Vec3 {
             x: self.x * rhs,
             y: self.y * rhs,
@@ -76,7 +76,7 @@ impl Mul<f32> for Vec3 {
     }
 }
 
-impl Mul<Vec3> for f32 {
+impl Mul<Vec3> for f64 {
     type Output = Vec3;
 
     fn mul(self, rhs: Vec3) -> Vec3 {
@@ -88,10 +88,10 @@ impl Mul<Vec3> for f32 {
     }
 }
 
-impl Div<f32> for Vec3 {
+impl Div<f64> for Vec3 {
     type Output = Self;
 
-    fn div(self, rhs: f32) -> Self {
+    fn div(self, rhs: f64) -> Self {
         Vec3 {
             x: self.x / rhs,
             y: self.y / rhs,
@@ -107,7 +107,7 @@ pub struct Ray {
 }
 
 impl Ray {
-    pub fn interp(&self, t: f32) -> Vec3 {
+    pub fn interp(&self, t: f64) -> Vec3 {
         self.origin + t * Vec3::from(self.dir)
     }
 }
