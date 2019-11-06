@@ -31,8 +31,8 @@ struct Camera {
 impl Camera {
     pub fn new(options: &CameraOptions, width: u32, height: u32) -> Camera {
         let n = (options.target - options.pos).to_unit();
-        let u = Vec3::from(n).cross(options.up).to_unit();
-        let v = Unit3::from_unit_vec3(Vec3::from(u).cross(n.into()));
+        let u = options.up.cross(n.into()).to_unit();
+        let v = Unit3::from_unit_vec3(Vec3::from(n).cross(u.into()));
 
         // cot(vert_fov/2)
         let plane_dist = 1.0 / (options.vert_fov * f64::consts::PI / 360.0).tan();
@@ -56,8 +56,7 @@ impl Camera {
         let ndc_x = 2.0 * ((f64::from(pixel_x) + 0.5) * self.inv_width) - 1.0;
         let ndc_y = 2.0 * ((f64::from(pixel_y) + 0.5) * self.inv_height) - 1.0;
 
-        let dir = ((ndc_x * self.aspect_ratio) * Vec3::from(self.u)
-            + ndc_y * Vec3::from(self.v)
+        let dir = ((-ndc_x * self.aspect_ratio) * Vec3::from(self.u) - ndc_y * Vec3::from(self.v)
             + self.n_with_plane_dist)
             .to_unit();
 
