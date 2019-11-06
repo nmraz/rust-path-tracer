@@ -1,6 +1,7 @@
 use crate::math::{Ray, Unit3, Vec3};
 use std::f64;
 
+#[derive(Debug, Copy, Clone)]
 pub struct CameraOptions {
     pub pos: Vec3,
     pub target: Vec3,
@@ -8,6 +9,7 @@ pub struct CameraOptions {
     pub vert_fov: f64,
 }
 
+#[derive(Debug, Copy, Clone)]
 pub struct RenderOptions {
     pub width: u32,
     pub height: u32,
