@@ -61,7 +61,7 @@ impl Vec3 {
 
     pub fn to_unit(self) -> Unit3 {
         let mag = self.mag();
-        assert!(mag < EPSILON, "Normalizing zero vector");
+        assert!(mag > EPSILON, "Normalizing zero vector");
         Unit3::from_unit_vec3(self / mag)
     }
 }
