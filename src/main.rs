@@ -3,6 +3,9 @@ mod math;
 mod renderer;
 mod scene;
 
+use std::fs::File;
+use std::io::*;
+
 use geom::*;
 use math::*;
 use renderer::*;

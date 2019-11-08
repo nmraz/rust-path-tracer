@@ -1,5 +1,6 @@
-use crate::math::*;
 use std::f64;
+
+use crate::math::*;
 
 #[derive(Debug, Copy, Clone)]
 pub struct CameraOptions {
