@@ -7,13 +7,13 @@ pub struct Material {
     pub emittance_color: Vec3,
 }
 
-pub struct Primitive {
-    geom: Box<dyn Geom>,
+pub struct Primitive<'a> {
+    geom: Box<dyn Geom + 'a>,
     material: Material,
 }
 
-impl Primitive {
-    pub fn new<G: Geom + 'static>(geom: G, material: Material) -> Primitive {
+impl<'a> Primitive<'a> {
+    pub fn new<G: Geom + 'a>(geom: G, material: Material) -> Primitive<'a> {
         Primitive {
             geom: Box::new(geom),
             material,
@@ -29,12 +29,12 @@ impl Primitive {
     }
 }
 
-pub struct Scene {
-    primitives: Vec<Primitive>,
+pub struct Scene<'a> {
+    primitives: Vec<Primitive<'a>>,
 }
 
-impl Scene {
-    pub fn new(primitives: Vec<Primitive>) -> Scene {
+impl<'a> Scene<'a> {
+    pub fn new(primitives: Vec<Primitive<'a>>) -> Scene<'a> {
         Scene { primitives }
     }
 
@@ -42,7 +42,7 @@ impl Scene {
         self.primitives.as_slice()
     }
 
-    pub fn add_primitive(&mut self, primitive: Primitive) {
+    pub fn add_primitive(&mut self, primitive: Primitive<'a>) {
         self.primitives.push(primitive);
     }
 }
