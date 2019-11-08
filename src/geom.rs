@@ -37,11 +37,11 @@ impl Geom for Sphere {
         // Divided by 2 here for stability
         let oc = ray.origin - self.center;
         let b = oc.dot(ray.dir.into());
-        let desc = b * b - oc.mag_squared() + self.radius * self.radius;
-        if desc < 0.0 {
+        let discriminant = b * b - oc.mag_squared() + self.radius * self.radius;
+        if discriminant < 0.0 {
             return None;
         }
-        let radical = desc.sqrt();
+        let radical = discriminant.sqrt();
         let t1 = -b - radical;
         let t2 = -b + radical;
 
