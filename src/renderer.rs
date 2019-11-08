@@ -18,7 +18,7 @@ pub struct RenderOptions {
     pub camera_options: CameraOptions,
 }
 
-struct Camera {
+pub struct Camera {
     pos: Vec3,
     u: Unit3,
     v: Unit3,
