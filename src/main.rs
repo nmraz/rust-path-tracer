@@ -11,9 +11,6 @@ use math::*;
 use renderer::*;
 use scene::*;
 
-use std::fs::File;
-use std::io::*;
-
 fn main() {
     let opts = CameraOptions {
         pos: Default::default(),
