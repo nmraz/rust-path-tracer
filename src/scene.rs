@@ -34,7 +34,11 @@ pub struct Scene<'a> {
 }
 
 impl<'a> Scene<'a> {
-    pub fn new(primitives: Vec<Primitive<'a>>) -> Scene<'a> {
+    pub fn new() -> Scene<'a> {
+        Scene { primitives: vec![] }
+    }
+
+    pub fn with_primitives(primitives: Vec<Primitive<'a>>) -> Scene<'a> {
         Scene { primitives }
     }
 
