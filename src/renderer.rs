@@ -52,10 +52,10 @@ impl Camera {
         }
     }
 
-    pub fn cast_ray(&self, pixel_x: u32, pixel_y: u32) -> Ray {
-        // Map to [-1, 1], cast through pixel centers.
-        let ndc_x = 2.0 * ((f64::from(pixel_x) + 0.5) * self.inv_width) - 1.0;
-        let ndc_y = 2.0 * ((f64::from(pixel_y) + 0.5) * self.inv_height) - 1.0;
+    pub fn cast_ray(&self, pixel_x: f64, pixel_y: f64) -> Ray {
+        // Map to [-1, 1]
+        let ndc_x = 2.0 * (pixel_x * self.inv_width) - 1.0;
+        let ndc_y = 2.0 * (pixel_y * self.inv_height) - 1.0;
 
         let dir = ((-ndc_x * self.aspect_ratio) * Vec3::from(self.u) - ndc_y * Vec3::from(self.v)
             + self.n_with_plane_dist)

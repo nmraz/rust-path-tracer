@@ -52,7 +52,7 @@ fn main() {
 
     for y in 0..height {
         for x in 0..width {
-            let ray = cam.cast_ray(x, y);
+            let ray = cam.cast_ray(f64::from(x) + 0.5, f64::from(y) + 0.5);
             if prim.geom().intersect(&ray).is_some() {
                 if let Material::Diffuse(ref color) = prim.material() {
                     pixels[(x + y * width) as usize] = *color;
