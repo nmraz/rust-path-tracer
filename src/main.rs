@@ -1,6 +1,7 @@
 mod geom;
 mod math;
 mod renderer;
+mod sample;
 mod scene;
 
 use std::fs::File;
