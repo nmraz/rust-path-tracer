@@ -2,9 +2,9 @@ use crate::geom::Geom;
 use crate::math::Vec3;
 
 #[derive(Debug, Copy, Clone)]
-pub struct Material {
-    pub diffuse_color: Vec3,
-    pub emittance_color: Vec3,
+pub enum Material {
+    Diffuse(Vec3),
+    Light(Vec3),
 }
 
 pub struct Primitive<'a> {

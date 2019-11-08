@@ -40,14 +40,11 @@ fn main() {
             },
             2.0,
         ),
-        Material {
-            diffuse_color: Vec3 {
-                x: 1.0,
-                y: 0.0,
-                z: 0.0,
-            },
-            emittance_color: Default::default(),
-        },
+        Material::Diffuse(Vec3 {
+            x: 1.0,
+            y: 0.0,
+            z: 0.0,
+        }),
     );
     let cam = Camera::new(&opts, width, height);
     let mut pixels: Box<[Vec3]> =
@@ -57,7 +54,9 @@ fn main() {
         for x in 0..width {
             let ray = cam.cast_ray(x, y);
             if prim.geom().intersect(&ray).is_some() {
-                pixels[(x + y * width) as usize] = prim.material().diffuse_color;
+                if let Material::Diffuse(ref color) = prim.material() {
+                    pixels[(x + y * width) as usize] = *color;
+                }
             }
         }
     }
