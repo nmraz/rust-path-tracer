@@ -1,5 +1,5 @@
-use crate::geom::Geom;
-use crate::math::Vec3;
+use crate::geom::*;
+use crate::math::*;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Material {

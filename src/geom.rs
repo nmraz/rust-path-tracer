@@ -1,4 +1,4 @@
-use crate::math::{nearly_equal, Ray, Unit3, Vec3, EPSILON};
+use crate::math::*;
 
 pub struct IntersectionInfo {
     normal: Unit3,

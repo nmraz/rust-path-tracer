@@ -1,4 +1,4 @@
-use crate::math::{Ray, Unit3, Vec3};
+use crate::math::*;
 use std::f64;
 
 #[derive(Debug, Copy, Clone)]
