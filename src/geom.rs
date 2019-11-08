@@ -1,8 +1,8 @@
 use crate::math::*;
 
 pub struct IntersectionInfo {
-    normal: Unit3,
-    inside: bool,
+    pub normal: Unit3,
+    pub inside: bool,
 }
 
 pub trait Geom {
