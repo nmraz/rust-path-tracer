@@ -95,8 +95,8 @@ fn main() {
     let opts = RenderOptions {
         width,
         height,
-        max_depth: 10,
-        samples_per_pixel: 1000,
+        max_depth: 20,
+        samples_per_pixel: 5000,
         camera_options: CameraOptions {
             pos: Vec3::default(),
             target: Vec3 {
@@ -112,6 +112,7 @@ fn main() {
             vert_fov: 55.0,
         },
     };
+
     let pixels = render(&scene, &opts);
 
     let mut ppm = BufWriter::new(File::create("image.ppm").unwrap());
