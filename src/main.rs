@@ -2,7 +2,6 @@ mod geom;
 mod math;
 mod renderer;
 mod sample;
-mod scene;
 
 use std::fs::File;
 use std::io::*;
@@ -12,7 +11,6 @@ use rand::Rng;
 use geom::*;
 use math::*;
 use renderer::*;
-use scene::*;
 
 fn main() {
     let width = 400;
