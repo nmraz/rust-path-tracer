@@ -22,8 +22,7 @@ pub fn sample_hemisphere<R: Rng + ?Sized>(normal: Unit3, rng: &mut R) -> Unit3 {
         }
     };
 
-    let basis_x = other.cross(basis_z);
-    debug_assert!(nearly_equal(basis_x.mag_squared(), 1.0));
+    let basis_x = Vec3::from(other.cross(basis_z).to_unit());
     let basis_y = basis_z.cross(basis_x);
 
     let radius_squared: f64 = rng.gen();
