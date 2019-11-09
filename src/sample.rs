@@ -4,7 +4,7 @@ use rand::Rng;
 
 use crate::math::{nearly_equal, Unit3, Vec3};
 
-pub fn sample_hemisphere<R: Rng + ?Sized>(normal: Unit3, rng: &mut R) -> Unit3 {
+pub fn sample_cos_weighted_hemisphere<R: Rng + ?Sized>(normal: Unit3, rng: &mut R) -> Unit3 {
     let basis_z: Vec3 = normal.into();
 
     // We need another vector that isn't collinear with the normal.

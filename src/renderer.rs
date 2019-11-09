@@ -4,7 +4,7 @@ use rand::Rng;
 
 use crate::geom::*;
 use crate::math::*;
-use crate::sample::sample_hemisphere;
+use crate::sample::sample_cos_weighted_hemisphere;
 
 #[derive(Debug, Copy, Clone)]
 pub struct CameraOptions {
@@ -183,7 +183,7 @@ impl<'a> Scene<'a> {
         match info.prim.material() {
             Material::Light(color) => *color,
             Material::Diffuse(color) => {
-                let dir = sample_hemisphere(info.normal, rng);
+                let dir = sample_cos_weighted_hemisphere(info.normal, rng);
                 let incoming = self.trace_ray(
                     &Ray {
                         origin: info.point,
