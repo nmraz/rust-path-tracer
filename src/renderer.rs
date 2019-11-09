@@ -1,6 +1,7 @@
 use std::f64;
 
 use rand::Rng;
+use rayon::prelude::*;
 
 use crate::geom::*;
 use crate::math::*;
@@ -203,24 +204,25 @@ pub fn render_to(scene: &Scene, pixels: &mut [Vec3], opts: &RenderOptions) {
     assert_eq!(pixels.len(), (opts.width * opts.height) as usize);
 
     let cam = Camera::new(&opts.camera_options, opts.width, opts.height);
-    let mut rng = rand::thread_rng();
 
-    for (pixel, idx) in pixels.iter_mut().zip(0..) {
-        let x = idx % opts.width;
-        let y = idx / opts.width;
+    pixels.par_iter_mut().enumerate().for_each(|(idx, pixel)| {
+        let x = (idx as u32) % opts.width;
+        let y = (idx as u32) / opts.width;
 
         let total_sampled = (0..opts.samples_per_pixel)
+            .into_par_iter()
             .map(|_| {
+                let mut rng = rand::thread_rng();
                 let ray = cam.cast_ray(
                     f64::from(x) + rng.gen::<f64>(),
                     f64::from(y) + rng.gen::<f64>(),
                 );
                 scene.trace_ray(&ray, &mut rng, 0, opts.max_depth)
             })
-            .fold(Vec3::default(), |acc, val| acc + val);
+            .reduce(Vec3::default, |a, b| a + b);
 
         *pixel = total_sampled / f64::from(opts.samples_per_pixel);
-    }
+    })
 }
 
 pub fn render(scene: &Scene, opts: &RenderOptions) -> Box<[Vec3]> {
