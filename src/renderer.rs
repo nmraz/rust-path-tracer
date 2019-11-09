@@ -205,20 +205,21 @@ pub fn render_to(scene: &Scene, pixels: &mut [Vec3], opts: &RenderOptions) {
     let cam = Camera::new(&opts.camera_options, opts.width, opts.height);
     let mut rng = rand::thread_rng();
 
-    for y in 0..opts.height {
-        for x in 0..opts.width {
-            let total_sampled = (0..opts.samples_per_pixel)
-                .map(|_| {
-                    let ray = cam.cast_ray(
-                        f64::from(x) + rng.gen::<f64>(),
-                        f64::from(y) + rng.gen::<f64>(),
-                    );
-                    scene.trace_ray(&ray, &mut rng, 0, opts.max_depth)
-                })
-                .fold(Vec3::default(), |acc, val| acc + val);
-            pixels[(x + y * opts.width) as usize] =
-                total_sampled / f64::from(opts.samples_per_pixel);
-        }
+    for (pixel, idx) in pixels.iter_mut().zip(0..) {
+        let x = idx % opts.width;
+        let y = idx / opts.width;
+
+        let total_sampled = (0..opts.samples_per_pixel)
+            .map(|_| {
+                let ray = cam.cast_ray(
+                    f64::from(x) + rng.gen::<f64>(),
+                    f64::from(y) + rng.gen::<f64>(),
+                );
+                scene.trace_ray(&ray, &mut rng, 0, opts.max_depth)
+            })
+            .fold(Vec3::default(), |acc, val| acc + val);
+
+        *pixel = total_sampled / f64::from(opts.samples_per_pixel);
     }
 }
 
