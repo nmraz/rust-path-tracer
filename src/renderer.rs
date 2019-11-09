@@ -198,3 +198,32 @@ impl<'a> Scene<'a> {
         }
     }
 }
+
+pub fn render_to(scene: &Scene, pixels: &mut [Vec3], opts: &RenderOptions) {
+    assert_eq!(pixels.len(), (opts.width * opts.height) as usize);
+
+    let cam = Camera::new(&opts.camera_options, opts.width, opts.height);
+    let mut rng = rand::thread_rng();
+
+    for y in 0..opts.height {
+        for x in 0..opts.width {
+            let total_sampled = (0..opts.samples_per_pixel)
+                .map(|_| {
+                    let ray = cam.cast_ray(
+                        f64::from(x) + rng.gen::<f64>(),
+                        f64::from(y) + rng.gen::<f64>(),
+                    );
+                    scene.trace_ray(&ray, &mut rng, 0, opts.max_depth)
+                })
+                .fold(Vec3::default(), |acc, val| acc + val);
+            pixels[(x + y * opts.width) as usize] =
+                total_sampled / f64::from(opts.samples_per_pixel);
+        }
+    }
+}
+
+pub fn render(scene: &Scene, opts: &RenderOptions) -> Box<[Vec3]> {
+    let mut pixels = vec![Vec3::default(); (opts.width * opts.height) as usize].into_boxed_slice();
+    render_to(scene, &mut pixels, opts);
+    pixels
+}

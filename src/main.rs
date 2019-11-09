@@ -6,20 +6,12 @@ mod sample;
 use std::fs::File;
 use std::io::*;
 
-use rand::Rng;
-
 use geom::*;
 use math::*;
 use renderer::*;
 
 fn main() {
-    let width = 400;
-    let height = 200;
-
-    let max_depth = 10;
-    let spp = 1000;
-
-    let s = Scene::with_primitives(vec![
+    let scene = Scene::with_primitives(vec![
         Primitive::new(
             Sphere::new(
                 Vec3 {
@@ -112,39 +104,30 @@ fn main() {
         ),
     ]);
 
-    let opts = CameraOptions {
-        pos: Vec3::default(),
-        target: Vec3 {
-            x: 0.0,
-            y: 0.0,
-            z: -1.0,
+    let width = 400;
+    let height = 200;
+
+    let opts = RenderOptions {
+        width,
+        height,
+        max_depth: 10,
+        samples_per_pixel: 1000,
+        camera_options: CameraOptions {
+            pos: Vec3::default(),
+            target: Vec3 {
+                x: 0.0,
+                y: 0.0,
+                z: -1.0,
+            },
+            up: Vec3 {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            vert_fov: 55.0,
         },
-        up: Vec3 {
-            x: 0.0,
-            y: 1.0,
-            z: 0.0,
-        },
-        vert_fov: 55.0,
     };
-    let cam = Camera::new(&opts, width, height);
-    let mut pixels = vec![Vec3::default(); (width * height) as usize].into_boxed_slice();
-
-    let mut rng = rand::thread_rng();
-
-    for y in 0..height {
-        for x in 0..width {
-            let total_sampled = (0..spp)
-                .map(|_| {
-                    let ray = cam.cast_ray(
-                        f64::from(x) + rng.gen::<f64>(),
-                        f64::from(y) + rng.gen::<f64>(),
-                    );
-                    s.trace_ray(&ray, &mut rng, 0, max_depth)
-                })
-                .fold(Vec3::default(), |acc, val| acc + val);
-            pixels[(x + y * width) as usize] = total_sampled / f64::from(spp);
-        }
-    }
+    let pixels = render(&scene, &opts);
 
     let mut ppm = BufWriter::new(File::create("image.ppm").unwrap());
     writeln!(ppm, "P3").unwrap();
