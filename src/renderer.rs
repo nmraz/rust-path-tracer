@@ -193,7 +193,7 @@ impl<'a> Scene<'a> {
                     depth + 1,
                     max_depth,
                 );
-                Vec3::from(dir).dot(info.normal.into()) * color.component_mul(incoming)
+                color.component_mul(incoming)
             }
         }
     }
