@@ -14,7 +14,7 @@ use scene::*;
 
 fn main() {
     let opts = CameraOptions {
-        pos: Default::default(),
+        pos: Vec3::default(),
         target: Vec3 {
             x: 0.0,
             y: 0.0,
@@ -47,8 +47,7 @@ fn main() {
         }),
     );
     let cam = Camera::new(&opts, width, height);
-    let mut pixels: Box<[Vec3]> =
-        vec![Default::default(); (width * height) as usize].into_boxed_slice();
+    let mut pixels = vec![Vec3::default(); (width * height) as usize].into_boxed_slice();
 
     for y in 0..height {
         for x in 0..width {
