@@ -60,26 +60,11 @@ fn main() {
         Primitive::new(
             Sphere::new(
                 Vec3 {
-                    x: -3.0,
-                    y: -5.0,
-                    z: -2.0,
-                },
-                3.0,
-            ),
-            Material::Light(Vec3 {
-                x: 0.0,
-                y: 0.0,
-                z: 0.5,
-            }),
-        ),
-        Primitive::new(
-            Sphere::new(
-                Vec3 {
                     x: 0.0,
-                    y: 8.0,
+                    y: 5.0,
                     z: -3.0,
                 },
-                6.0,
+                3.0,
             ),
             Material::Light(Vec3 {
                 x: 1.0,
