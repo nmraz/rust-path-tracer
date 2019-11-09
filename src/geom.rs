@@ -1,6 +1,6 @@
 use crate::math::*;
 
-pub trait Geom {
+pub trait Geom: Sync {
     fn intersect(&self, ray: &Ray) -> Option<f64>;
     fn normal_at(&self, point: Vec3) -> Unit3;
 }
