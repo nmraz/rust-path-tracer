@@ -1,6 +1,7 @@
 use crate::math::*;
 
 pub struct IntersectionInfo {
+    pub point: Vec3,
     pub normal: Unit3,
     pub inside: bool,
 }
@@ -67,11 +68,13 @@ impl Geom for Sphere {
         let inside = outward.dot(ray.dir.into()) > 0.0; // Note: == 0 means tangent, still outside.
         if inside {
             IntersectionInfo {
+                point,
                 normal: (-outward).to_unit(),
                 inside: true,
             }
         } else {
             IntersectionInfo {
+                point,
                 normal: outward.to_unit(),
                 inside: false,
             }
