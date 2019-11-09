@@ -7,56 +7,6 @@ use crate::math::*;
 use crate::sample::sample_hemisphere;
 
 #[derive(Debug, Copy, Clone)]
-pub enum Material {
-    Diffuse(Vec3),
-    Light(Vec3),
-}
-
-pub struct Primitive<'a> {
-    geom: Box<dyn Geom + 'a>,
-    material: Material,
-}
-
-impl<'a> Primitive<'a> {
-    pub fn new<G: Geom + 'a>(geom: G, material: Material) -> Primitive<'a> {
-        Primitive {
-            geom: Box::new(geom),
-            material,
-        }
-    }
-
-    pub fn geom(&self) -> &dyn Geom {
-        self.geom.as_ref()
-    }
-
-    pub fn material(&self) -> &Material {
-        &self.material
-    }
-}
-
-pub struct Scene<'a> {
-    primitives: Vec<Primitive<'a>>,
-}
-
-impl<'a> Scene<'a> {
-    pub fn new() -> Scene<'a> {
-        Scene { primitives: vec![] }
-    }
-
-    pub fn with_primitives(primitives: Vec<Primitive<'a>>) -> Scene<'a> {
-        Scene { primitives }
-    }
-
-    pub fn primitives(&self) -> &[Primitive] {
-        self.primitives.as_slice()
-    }
-
-    pub fn add_primitive(&mut self, primitive: Primitive<'a>) {
-        self.primitives.push(primitive);
-    }
-}
-
-#[derive(Debug, Copy, Clone)]
 pub struct CameraOptions {
     pub pos: Vec3,
     pub target: Vec3,
@@ -122,63 +72,129 @@ impl Camera {
     }
 }
 
-fn intersect<'a>(scene: &'a Scene<'a>, ray: &Ray) -> Option<(&'a Primitive<'a>, IntersectionInfo)> {
-    let mut intersected = None;
-    for prim in scene.primitives() {
-        if let Some(dist) = prim.geom().intersect(ray) {
-            match intersected {
-                Some((_, min_dist)) => {
-                    if dist < min_dist {
+#[derive(Debug, Copy, Clone)]
+pub enum Material {
+    Diffuse(Vec3),
+    Light(Vec3),
+}
+
+pub struct Primitive<'a> {
+    geom: Box<dyn Geom + 'a>,
+    material: Material,
+}
+
+impl<'a> Primitive<'a> {
+    pub fn new<G: Geom + 'a>(geom: G, material: Material) -> Primitive<'a> {
+        Primitive {
+            geom: Box::new(geom),
+            material,
+        }
+    }
+
+    pub fn geom(&self) -> &dyn Geom {
+        self.geom.as_ref()
+    }
+
+    pub fn material(&self) -> &Material {
+        &self.material
+    }
+}
+
+struct IntersectionInfo<'a> {
+    pub prim: &'a Primitive<'a>,
+    pub point: Vec3,
+    pub normal: Unit3,
+    pub inside: bool,
+}
+
+pub struct Scene<'a> {
+    primitives: Vec<Primitive<'a>>,
+}
+
+impl<'a> Scene<'a> {
+    pub fn new() -> Scene<'a> {
+        Scene { primitives: vec![] }
+    }
+
+    pub fn with_primitives(primitives: Vec<Primitive<'a>>) -> Scene<'a> {
+        Scene { primitives }
+    }
+
+    pub fn primitives(&self) -> &[Primitive] {
+        self.primitives.as_slice()
+    }
+
+    pub fn add_primitive(&mut self, primitive: Primitive<'a>) {
+        self.primitives.push(primitive);
+    }
+
+    fn intersect(&'a self, ray: &Ray) -> Option<IntersectionInfo<'a>> {
+        let mut intersected = None;
+        for prim in self.primitives() {
+            if let Some(dist) = prim.geom().intersect(ray) {
+                match intersected {
+                    Some((_, min_dist)) => {
+                        if dist < min_dist {
+                            intersected = Some((prim, dist));
+                        }
+                    }
+                    None => {
                         intersected = Some((prim, dist));
                     }
                 }
-                None => {
-                    intersected = Some((prim, dist));
-                }
             }
         }
-    }
-    intersected.map(|(prim, dist)| {
-        (
-            prim,
-            prim.geom().intersection_info_at(ray.interp(dist), ray),
-        )
-    })
-}
-
-pub fn trace_ray<R: Rng + ?Sized>(
-    scene: &Scene,
-    ray: &Ray,
-    rng: &mut R,
-    depth: u32,
-    max_depth: u32,
-) -> Vec3 {
-    if depth >= max_depth {
-        return Vec3::default();
+        intersected.map(|(prim, dist)| {
+            let point = ray.interp(dist);
+            let normal = prim.geom().normal_at(point);
+            // Note: == 0 means tangent, still outside.
+            let inside = Vec3::from(normal).dot(ray.dir.into()) > 0.0;
+            IntersectionInfo {
+                prim,
+                point,
+                normal: if inside {
+                    (-Vec3::from(normal)).to_unit()
+                } else {
+                    normal
+                },
+                inside,
+            }
+        })
     }
 
-    let (prim, intersection_info) = match intersect(scene, ray) {
-        None => {
+    pub fn trace_ray<R: Rng + ?Sized>(
+        &self,
+        ray: &Ray,
+        rng: &mut R,
+        depth: u32,
+        max_depth: u32,
+    ) -> Vec3 {
+        if depth >= max_depth {
             return Vec3::default();
         }
-        Some(info) => info,
-    };
 
-    match prim.material() {
-        Material::Light(color) => *color,
-        Material::Diffuse(color) => {
-            let dir = sample_hemisphere(intersection_info.normal, rng);
-            let incoming = trace_ray(
-                scene,
-                &Ray {
-                    origin: intersection_info.point,
-                    dir,
-                },
-                rng,
-                depth + 1,
-                max_depth,
-            );
-            Vec3::from(dir).dot(intersection_info.normal.into()) * color.component_mul(incoming)
+        let info = match self.intersect(ray) {
+            None => {
+                return Vec3::default();
+            }
+            Some(info) => info,
+        };
+
+        match info.prim.material() {
+            Material::Light(color) => *color,
+            Material::Diffuse(color) => {
+                let dir = sample_hemisphere(info.normal, rng);
+                let incoming = self.trace_ray(
+                    &Ray {
+                        origin: info.point,
+                        dir,
+                    },
+                    rng,
+                    depth + 1,
+                    max_depth,
+                );
+                Vec3::from(dir).dot(info.normal.into()) * color.component_mul(incoming)
+            }
         }
     }
 }

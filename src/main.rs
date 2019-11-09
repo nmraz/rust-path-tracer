@@ -139,7 +139,7 @@ fn main() {
                         f64::from(x) + rng.gen::<f64>(),
                         f64::from(y) + rng.gen::<f64>(),
                     );
-                    trace_ray(&s, &ray, &mut rng, 0, max_depth)
+                    s.trace_ray(&ray, &mut rng, 0, max_depth)
                 })
                 .fold(Vec3::default(), |acc, val| acc + val);
             pixels[(x + y * width) as usize] = total_sampled / f64::from(spp);
