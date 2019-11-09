@@ -1,6 +1,11 @@
 use std::f64;
 
+use rand::Rng;
+
+use crate::geom::*;
 use crate::math::*;
+use crate::sample::sample_hemisphere;
+use crate::scene::*;
 
 #[derive(Debug, Copy, Clone)]
 pub struct CameraOptions {
@@ -64,6 +69,67 @@ impl Camera {
         Ray {
             origin: self.pos,
             dir,
+        }
+    }
+}
+
+fn intersect<'a>(scene: &'a Scene<'a>, ray: &Ray) -> Option<(&'a Primitive<'a>, IntersectionInfo)> {
+    let mut intersected = None;
+    for prim in scene.primitives() {
+        if let Some(dist) = prim.geom().intersect(ray) {
+            match intersected {
+                Some((_, min_dist)) => {
+                    if dist < min_dist {
+                        intersected = Some((prim, dist));
+                    }
+                }
+                None => {
+                    intersected = Some((prim, dist));
+                }
+            }
+        }
+    }
+    intersected.map(|(prim, dist)| {
+        (
+            prim,
+            prim.geom().intersection_info_at(ray.interp(dist), ray),
+        )
+    })
+}
+
+pub fn trace_ray<R: Rng + ?Sized>(
+    scene: &Scene,
+    ray: &Ray,
+    rng: &mut R,
+    depth: u32,
+    max_depth: u32,
+) -> Vec3 {
+    if depth >= max_depth {
+        return Vec3::default();
+    }
+
+    let (prim, intersection_info) = match intersect(scene, ray) {
+        None => {
+            return Vec3::default();
+        }
+        Some(info) => info,
+    };
+
+    match prim.material() {
+        Material::Light(color) => *color,
+        Material::Diffuse(color) => {
+            let dir = sample_hemisphere(intersection_info.normal, rng);
+            let incoming = trace_ray(
+                scene,
+                &Ray {
+                    origin: intersection_info.point,
+                    dir,
+                },
+                rng,
+                depth + 1,
+                max_depth,
+            );
+            color.component_mul(incoming)
         }
     }
 }
