@@ -59,6 +59,14 @@ impl Vec3 {
         }
     }
 
+    pub fn component_mul(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
+            z: self.z * rhs.z,
+        }
+    }
+
     pub fn to_unit(self) -> Unit3 {
         let mag = self.mag();
         assert!(mag > EPSILON, "Normalizing zero vector");
