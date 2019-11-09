@@ -129,7 +129,7 @@ pub fn trace_ray<R: Rng + ?Sized>(
                 depth + 1,
                 max_depth,
             );
-            color.component_mul(incoming)
+            Vec3::from(dir).dot(intersection_info.normal.into()) * color.component_mul(incoming)
         }
     }
 }
