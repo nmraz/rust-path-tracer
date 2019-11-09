@@ -6,8 +6,8 @@ mod sample;
 use std::fs::File;
 use std::io::*;
 
-use geom::*;
-use math::*;
+use geom::Sphere;
+use math::Vec3;
 use renderer::*;
 
 fn main() {
@@ -89,12 +89,9 @@ fn main() {
         ),
     ]);
 
-    let width = 400;
-    let height = 200;
-
     let opts = RenderOptions {
-        width,
-        height,
+        width: 400,
+        height: 200,
         max_depth: 20,
         samples_per_pixel: 5000,
         camera_options: CameraOptions {
@@ -117,7 +114,7 @@ fn main() {
 
     let mut ppm = BufWriter::new(File::create("image.ppm").unwrap());
     writeln!(ppm, "P3").unwrap();
-    writeln!(ppm, "{} {}", width, height).unwrap();
+    writeln!(ppm, "{} {}", opts.width, opts.height).unwrap();
     writeln!(ppm, "255").unwrap();
 
     for pixel in pixels.iter() {
