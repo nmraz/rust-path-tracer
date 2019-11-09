@@ -1,14 +1,8 @@
 use crate::math::*;
 
-pub struct IntersectionInfo {
-    pub point: Vec3,
-    pub normal: Unit3,
-    pub inside: bool,
-}
-
 pub trait Geom {
     fn intersect(&self, ray: &Ray) -> Option<f64>;
-    fn intersection_info_at(&self, point: Vec3, ray: &Ray) -> IntersectionInfo;
+    fn normal_at(&self, point: Vec3) -> Unit3;
 }
 
 #[derive(Copy, Clone)]
@@ -59,25 +53,12 @@ impl Geom for Sphere {
         None
     }
 
-    fn intersection_info_at(&self, point: Vec3, ray: &Ray) -> IntersectionInfo {
+    fn normal_at(&self, point: Vec3) -> Unit3 {
         let outward = point - self.center;
         debug_assert!(
             nearly_equal(outward.mag_squared(), self.radius * self.radius),
             "Point not on sphere"
         );
-        let inside = outward.dot(ray.dir.into()) > 0.0; // Note: == 0 means tangent, still outside.
-        if inside {
-            IntersectionInfo {
-                point,
-                normal: (-outward).to_unit(),
-                inside: true,
-            }
-        } else {
-            IntersectionInfo {
-                point,
-                normal: outward.to_unit(),
-                inside: false,
-            }
-        }
+        outward.to_unit()
     }
 }
