@@ -1,4 +1,5 @@
 mod geom;
+mod img;
 mod math;
 mod renderer;
 mod sample;
@@ -111,18 +112,9 @@ fn main() {
     };
 
     let pixels = render(&scene, &opts);
+    let raw_pixels = img::pixels_to_raw_rgb(pixels.as_ref());
 
-    let mut ppm = BufWriter::new(File::create("image.ppm").unwrap());
-    writeln!(ppm, "P3").unwrap();
-    writeln!(ppm, "{} {}", opts.width, opts.height).unwrap();
-    writeln!(ppm, "255").unwrap();
-
-    for pixel in pixels.iter() {
-        let r = (pixel.x * 255.0) as u8;
-        let g = (pixel.y * 255.0) as u8;
-        let b = (pixel.z * 255.0) as u8;
-        writeln!(ppm, "{} {} {}", r, g, b).unwrap();
-    }
-
-    ppm.flush().unwrap();
+    let mut png = BufWriter::new(File::create("image.png").unwrap());
+    img::write_png(&mut png, raw_pixels.as_ref(), opts.width, opts.height).unwrap();
+    png.flush().unwrap();
 }
