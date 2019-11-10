@@ -2,13 +2,13 @@ use std::f64;
 
 use rand::Rng;
 
-use crate::math::{nearly_equal, Unit3, Vec3};
+use crate::math::{Unit3, Vec3};
 
 pub fn sample_cos_weighted_hemisphere<R: Rng + ?Sized>(normal: Unit3, rng: &mut R) -> Unit3 {
     let basis_z: Vec3 = normal.into();
 
     // We need another vector that isn't collinear with the normal.
-    let other = if nearly_equal(basis_z.x, 1.0) {
+    let other = if basis_z.x.abs() > 0.1 {
         Vec3 {
             x: 0.0,
             y: 1.0,
