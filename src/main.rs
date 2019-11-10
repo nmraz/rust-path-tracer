@@ -6,6 +6,7 @@ mod sample;
 
 use std::fs::File;
 use std::io::*;
+use std::time::Instant;
 
 use geom::Sphere;
 use math::Vec3;
@@ -111,7 +112,18 @@ fn main() {
         },
     };
 
+    let start = Instant::now();
     let pixels = render(&scene, &opts);
+    let elapsed = Instant::now() - start;
+
+    println!(
+        "Rendered {}x{} at {}spp in {}s",
+        opts.width,
+        opts.height,
+        opts.samples_per_pixel,
+        elapsed.as_secs_f64()
+    );
+
     let raw_pixels = img::pixels_to_raw_rgb(pixels.as_ref());
 
     let mut png = BufWriter::new(File::create("image.png").unwrap());
