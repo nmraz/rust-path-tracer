@@ -209,17 +209,17 @@ pub fn render_to(scene: &Scene, pixels: &mut [Vec3], opts: &RenderOptions) {
         let x = (idx as u32) % opts.width;
         let y = (idx as u32) / opts.width;
 
+        let mut rng = rand::thread_rng();
+
         let total_sampled = (0..opts.samples_per_pixel)
-            .into_par_iter()
             .map(|_| {
-                let mut rng = rand::thread_rng();
                 let ray = cam.cast_ray(
                     f64::from(x) + rng.gen::<f64>(),
                     f64::from(y) + rng.gen::<f64>(),
                 );
                 scene.trace_ray(&ray, &mut rng, 0, opts.max_depth)
             })
-            .reduce(Vec3::default, |a, b| a + b);
+            .fold(Vec3::default(), |a, b| a + b);
 
         *pixel = total_sampled / f64::from(opts.samples_per_pixel);
     })
