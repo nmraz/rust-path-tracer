@@ -32,16 +32,31 @@ fn main() {
         Primitive::new(
             Sphere::new(
                 Vec3 {
-                    x: -2.5,
+                    x: -1.7,
                     y: 0.0,
                     z: -5.0,
                 },
-                2.0,
+                0.9,
             ),
             Material::make_diffuse(Vec3 {
                 x: 1.0,
                 y: 0.0,
                 z: 1.0,
+            }),
+        ),
+        Primitive::new(
+            Sphere::new(
+                Vec3 {
+                    x: 0.0,
+                    y: 1.0,
+                    z: -10.0,
+                },
+                2.0,
+            ),
+            Material::make_diffuse(Vec3 {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
             }),
         ),
         Primitive::new(
@@ -56,45 +71,49 @@ fn main() {
             Material::make_diffuse(Vec3 {
                 x: 1.0,
                 y: 1.0,
-                z: 1.0,
+                z: 0.0,
             }),
+        ),
+        Primitive::new(
+            Sphere::new(
+                Vec3 {
+                    x: -5.0,
+                    y: 0.0,
+                    z: -2.0,
+                },
+                1.0,
+            ),
+            Material::make_light(
+                Vec3 {
+                    x: 1.0,
+                    y: 1.0,
+                    z: 1.0,
+                } * 15.0,
+            ),
         ),
         Primitive::new(
             Sphere::new(
                 Vec3 {
                     x: 0.0,
                     y: 5.0,
-                    z: -3.0,
+                    z: -6.0,
                 },
-                3.0,
+                1.0,
             ),
-            Material::make_light(Vec3 {
-                x: 1.0,
-                y: 1.0,
-                z: 1.0,
-            }),
-        ),
-        Primitive::new(
-            Sphere::new(
+            Material::make_light(
                 Vec3 {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 7.0,
-                },
-                6.0,
+                    x: 0.2,
+                    y: 0.2,
+                    z: 1.0,
+                } * 4.0,
             ),
-            Material::make_light(Vec3 {
-                x: 1.0,
-                y: 1.0,
-                z: 0.0,
-            }),
         ),
     ]);
 
     let opts = RenderOptions {
         width: 400,
         height: 200,
-        max_depth: 20,
+        max_depth: 40,
         samples_per_pixel: 5000,
         camera_options: CameraOptions {
             pos: Vec3::default(),
