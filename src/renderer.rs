@@ -74,9 +74,25 @@ impl Camera {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub enum Material {
-    Diffuse(Vec3),
-    Light(Vec3),
+pub struct Material {
+    pub emittance: Vec3,
+    pub albedo: Vec3,
+}
+
+impl Material {
+    pub fn make_light(color: Vec3) -> Material {
+        Material {
+            emittance: color,
+            albedo: Vec3::default(),
+        }
+    }
+
+    pub fn make_diffuse(color: Vec3) -> Material {
+        Material {
+            emittance: Vec3::default(),
+            albedo: color,
+        }
+    }
 }
 
 pub struct Primitive<'a> {
@@ -181,22 +197,25 @@ impl<'a> Scene<'a> {
             Some(info) => info,
         };
 
-        match info.prim.material() {
-            Material::Light(color) => *color,
-            Material::Diffuse(color) => {
-                let dir = sample_cos_weighted_hemisphere(info.normal, rng);
-                let incoming = self.trace_ray(
-                    &Ray {
-                        origin: info.point,
-                        dir,
-                    },
-                    rng,
-                    depth + 1,
-                    max_depth,
-                );
-                color.component_mul(incoming)
-            }
-        }
+        let material = info.prim.material();
+
+        let reflected = if material.albedo.mag_squared() > EPSILON {
+            let dir = sample_cos_weighted_hemisphere(info.normal, rng);
+            let incoming = self.trace_ray(
+                &Ray {
+                    origin: info.point,
+                    dir,
+                },
+                rng,
+                depth + 1,
+                max_depth,
+            );
+            material.albedo.component_mul(incoming)
+        } else {
+            Vec3::default()
+        };
+
+        material.emittance + reflected
     }
 }
 

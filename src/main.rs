@@ -23,7 +23,7 @@ fn main() {
                 },
                 2.0,
             ),
-            Material::Diffuse(Vec3 {
+            Material::make_diffuse(Vec3 {
                 x: 1.0,
                 y: 1.0,
                 z: 1.0,
@@ -38,7 +38,7 @@ fn main() {
                 },
                 2.0,
             ),
-            Material::Diffuse(Vec3 {
+            Material::make_diffuse(Vec3 {
                 x: 1.0,
                 y: 0.0,
                 z: 1.0,
@@ -53,7 +53,7 @@ fn main() {
                 },
                 10.0,
             ),
-            Material::Diffuse(Vec3 {
+            Material::make_diffuse(Vec3 {
                 x: 1.0,
                 y: 1.0,
                 z: 1.0,
@@ -68,7 +68,7 @@ fn main() {
                 },
                 3.0,
             ),
-            Material::Light(Vec3 {
+            Material::make_light(Vec3 {
                 x: 1.0,
                 y: 1.0,
                 z: 1.0,
@@ -83,7 +83,7 @@ fn main() {
                 },
                 6.0,
             ),
-            Material::Light(Vec3 {
+            Material::make_light(Vec3 {
                 x: 1.0,
                 y: 1.0,
                 z: 0.0,
