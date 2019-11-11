@@ -111,10 +111,10 @@ fn main() {
     ]);
 
     let opts = RenderOptions {
-        width: 400,
-        height: 200,
+        width: 800,
+        height: 400,
         max_depth: 40,
-        samples_per_pixel: 5000,
+        samples_per_pixel: 15000,
         camera_options: CameraOptions {
             pos: Vec3::default(),
             target: Vec3 {
