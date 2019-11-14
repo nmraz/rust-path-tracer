@@ -40,12 +40,26 @@ pub fn sample_cos_weighted_hemisphere<R: Rng + ?Sized>(normal: Unit3, rng: &mut 
     let basis = Basis::from_normal(normal);
 
     let radius_squared: f64 = rng.gen();
-    let theta: f64 = rng.gen_range(0.0, 2.0 * f64::consts::PI);
+    let phi = rng.gen_range(0.0, 2.0 * f64::consts::PI);
 
     let radius = radius_squared.sqrt();
-    let x = radius * theta.cos();
-    let y = radius * theta.sin();
+    let x = radius * phi.cos();
+    let y = radius * phi.sin();
     let z = (1.0 - radius_squared).sqrt();
+
+    Unit3::from_unit_vec3(x * basis.x + y * basis.y + z * basis.z)
+}
+
+pub fn sample_uniform_cone<R: Rng + ?Sized>(normal: Unit3, alpha: f64, rng: &mut R) -> Unit3 {
+    let basis = Basis::from_normal(normal);
+
+    let u: f64 = rng.gen();
+    let phi = rng.gen_range(0.0, 2.0 * f64::consts::PI);
+
+    let z = 1.0 + u * (alpha.cos() - 1.0);
+    let radius = (1.0 - z * z).sqrt();
+    let x = radius * phi.cos();
+    let y = radius * phi.sin();
 
     Unit3::from_unit_vec3(x * basis.x + y * basis.y + z * basis.z)
 }
