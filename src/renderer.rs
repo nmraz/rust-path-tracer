@@ -77,6 +77,8 @@ impl Camera {
 pub struct Material {
     pub emittance: Vec3,
     pub albedo: Vec3,
+    pub reflectance: f64,
+    pub gloss: f64,
 }
 
 impl Material {
@@ -84,6 +86,8 @@ impl Material {
         Material {
             emittance: color,
             albedo: Vec3::default(),
+            reflectance: 0.0,
+            gloss: 0.0,
         }
     }
 
@@ -91,6 +95,8 @@ impl Material {
         Material {
             emittance: Vec3::default(),
             albedo: color,
+            reflectance: 0.0,
+            gloss: 0.0,
         }
     }
 }
