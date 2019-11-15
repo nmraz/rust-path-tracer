@@ -99,6 +99,15 @@ impl Material {
             gloss: 0.0,
         }
     }
+
+    pub fn make_reflective(color: Vec3, reflectance: f64, gloss: f64) -> Material {
+        Material {
+            emittance: Vec3::default(),
+            albedo: color,
+            reflectance,
+            gloss,
+        }
+    }
 }
 
 pub struct Primitive<'a> {
