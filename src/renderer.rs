@@ -196,6 +196,7 @@ impl<'a> Scene<'a> {
 
     fn trace_reflection<R: Rng + ?Sized>(
         &self,
+        ray: &Ray,
         info: &IntersectionInfo,
         rng: &mut R,
         depth: u32,
@@ -207,8 +208,13 @@ impl<'a> Scene<'a> {
             let alpha = (1.0 - material.gloss) * f64::consts::FRAC_PI_2;
             let cos_alpha = alpha.cos();
 
-            let dir = sample_uniform_cone(info.normal, alpha, rng);
-            let cos_theta = Vec3::from(dir).dot(info.normal.into());
+            let ray_dir: Vec3 = ray.dir.into();
+            let normal: Vec3 = info.normal.into();
+
+            let reflection_dir = ray_dir - 2.0 * ray_dir.dot(normal) * normal;
+
+            let dir = sample_uniform_cone(Unit3::from_unit_vec3(reflection_dir), alpha, rng);
+            let cos_theta = Vec3::from(dir).dot(normal);
 
             if cos_theta < 0.0 {
                 // TODO: take into account in PDF, BDRF?
@@ -272,7 +278,7 @@ impl<'a> Scene<'a> {
 
         let material = info.prim.material();
 
-        material.emittance + self.trace_reflection(&info, rng, depth + 1, max_depth)
+        material.emittance + self.trace_reflection(ray, &info, rng, depth + 1, max_depth)
     }
 }
 
