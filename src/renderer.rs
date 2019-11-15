@@ -5,7 +5,7 @@ use rayon::prelude::*;
 
 use crate::geom::*;
 use crate::math::*;
-use crate::sample::sample_cos_weighted_hemisphere;
+use crate::sample::*;
 
 #[derive(Debug, Copy, Clone)]
 pub struct CameraOptions {
@@ -185,6 +185,64 @@ impl<'a> Scene<'a> {
         })
     }
 
+    fn trace_reflection<R: Rng + ?Sized>(
+        &self,
+        info: &IntersectionInfo,
+        rng: &mut R,
+        depth: u32,
+        max_depth: u32,
+    ) -> Vec3 {
+        let material = info.prim.material();
+
+        if material.reflectance > 0.0 && rng.gen::<f64>() < material.reflectance {
+            let alpha = (1.0 - material.gloss) * f64::consts::FRAC_PI_2;
+            let cos_alpha = alpha.cos();
+
+            let dir = sample_uniform_cone(info.normal, alpha, rng);
+            let cos_theta = Vec3::from(dir).dot(info.normal.into());
+
+            if cos_theta < 0.0 {
+                // TODO: take into account in PDF, BDRF?
+                return Vec3::default();
+            }
+
+            let incoming = self.trace_ray(
+                &Ray {
+                    origin: info.point,
+                    dir,
+                },
+                rng,
+                depth,
+                max_depth,
+            );
+
+            let coeff = if cos_alpha < EPSILON {
+                1.0
+            } else {
+                // PDF = 1 / (2pi * (1 - cos(alpha))), BDRF = 1 / (pi * (1 - cos^2(alpha)))
+                2.0 * (1.0 - cos_alpha) / (1.0 - cos_alpha * cos_alpha)
+            };
+
+            return coeff * cos_theta * incoming;
+        }
+
+        if material.albedo.mag_squared() > EPSILON {
+            let dir = sample_cos_weighted_hemisphere(info.normal, rng);
+            let incoming = self.trace_ray(
+                &Ray {
+                    origin: info.point,
+                    dir,
+                },
+                rng,
+                depth,
+                max_depth,
+            );
+            return material.albedo.component_mul(incoming);
+        }
+
+        Vec3::default()
+    }
+
     pub fn trace_ray<R: Rng + ?Sized>(
         &self,
         ray: &Ray,
@@ -205,23 +263,7 @@ impl<'a> Scene<'a> {
 
         let material = info.prim.material();
 
-        let reflected = if material.albedo.mag_squared() > EPSILON {
-            let dir = sample_cos_weighted_hemisphere(info.normal, rng);
-            let incoming = self.trace_ray(
-                &Ray {
-                    origin: info.point,
-                    dir,
-                },
-                rng,
-                depth + 1,
-                max_depth,
-            );
-            material.albedo.component_mul(incoming)
-        } else {
-            Vec3::default()
-        };
-
-        material.emittance + reflected
+        material.emittance + self.trace_reflection(&info, rng, depth + 1, max_depth)
     }
 }
 
