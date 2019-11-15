@@ -17,69 +17,104 @@ fn main() {
         Primitive::new(
             Sphere::new(
                 Vec3 {
-                    x: 2.5,
+                    x: 0.0,
                     y: 0.0,
-                    z: -5.0,
+                    z: -6.0,
                 },
-                2.0,
+                1.0,
             ),
-            Material::make_diffuse(Vec3 {
-                x: 1.0,
-                y: 1.0,
-                z: 1.0,
-            }),
+            Material::make_reflective(
+                Vec3 {
+                    x: 1.0,
+                    y: 0.0,
+                    z: 0.0,
+                },
+                0.4,
+                0.9,
+            ),
         ),
         Primitive::new(
             Sphere::new(
                 Vec3 {
-                    x: -1.7,
-                    y: 0.0,
-                    z: -5.0,
+                    x: 0.0,
+                    y: 2.05,
+                    z: -6.0,
                 },
-                0.9,
+                0.75,
             ),
-            Material::make_diffuse(Vec3 {
-                x: 1.0,
-                y: 0.0,
-                z: 1.0,
-            }),
-        ),
-        Primitive::new(
-            Sphere::new(
+            Material::make_reflective(
                 Vec3 {
                     x: 0.0,
                     y: 1.0,
-                    z: -10.0,
+                    z: 0.0,
                 },
-                2.0,
+                0.4,
+                0.9,
             ),
-            Material::make_diffuse(Vec3 {
-                x: 0.0,
-                y: 1.0,
-                z: 0.0,
-            }),
+        ),
+        Primitive::new(
+            Sphere::new(
+                Vec3 {
+                    x: 2.05,
+                    y: 0.0,
+                    z: -6.0,
+                },
+                0.75,
+            ),
+            Material::make_reflective(
+                Vec3 {
+                    x: 1.0,
+                    y: 1.0,
+                    z: 0.0,
+                },
+                0.4,
+                0.9,
+            ),
         ),
         Primitive::new(
             Sphere::new(
                 Vec3 {
                     x: 0.0,
-                    y: -12.0,
-                    z: -3.0,
+                    y: -2.05,
+                    z: -6.0,
                 },
-                10.0,
+                0.75,
             ),
-            Material::make_diffuse(Vec3 {
-                x: 1.0,
-                y: 1.0,
-                z: 0.0,
-            }),
+            Material::make_reflective(
+                Vec3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: 1.0,
+                },
+                0.4,
+                0.9,
+            ),
         ),
         Primitive::new(
             Sphere::new(
                 Vec3 {
-                    x: -5.0,
+                    x: -2.05,
                     y: 0.0,
-                    z: -2.0,
+                    z: -6.0,
+                },
+                0.75,
+            ),
+            Material::make_reflective(
+                Vec3 {
+                    x: 0.0,
+                    y: 1.0,
+                    z: 1.0,
+                },
+                0.4,
+                0.9,
+            ),
+        ),
+        Primitive::new(
+            Sphere::new(
+                Vec3 {
+                    x: -7.5,
+                    y: 5.0,
+                    z: -3.0,
                 },
                 1.0,
             ),
@@ -88,33 +123,33 @@ fn main() {
                     x: 1.0,
                     y: 1.0,
                     z: 1.0,
-                } * 15.0,
+                } * 240.0,
             ),
         ),
         Primitive::new(
             Sphere::new(
                 Vec3 {
-                    x: 0.0,
-                    y: 5.0,
-                    z: -6.0,
+                    x: 7.5,
+                    y: -5.0,
+                    z: -9.0,
                 },
                 1.0,
             ),
             Material::make_light(
                 Vec3 {
-                    x: 0.2,
-                    y: 0.2,
+                    x: 1.0,
+                    y: 1.0,
                     z: 1.0,
-                } * 4.0,
+                } * 240.0,
             ),
         ),
     ]);
 
     let opts = RenderOptions {
         width: 800,
-        height: 400,
-        max_depth: 40,
-        samples_per_pixel: 15000,
+        height: 800,
+        max_depth: 10,
+        samples_per_pixel: 20000,
         camera_options: CameraOptions {
             pos: Vec3::default(),
             target: Vec3 {
