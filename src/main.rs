@@ -8,6 +8,9 @@ use std::fs::File;
 use std::io::*;
 use std::time::Instant;
 
+use quicli::prelude::*;
+use structopt::StructOpt;
+
 use geom::Sphere;
 use math::Vec3;
 use renderer::*;
@@ -129,7 +132,29 @@ fn build_scene() -> Scene<'static> {
     ])
 }
 
+#[derive(StructOpt)]
+struct CliArgs {
+    /// Maximum bounce depth
+    #[structopt(long, default_value = "5")]
+    pub max_depth: u32,
+
+    /// Number of samples to gather per pixel
+    #[structopt(long, short)]
+    pub samples_per_pixel: u32,
+
+    /// Number of threads to use when rendering in parallel.
+    /// If this argument is 0, the number of cores will be used.
+    #[structopt(short = "j", default_value = "0")]
+    pub threads: u32,
+
+    /// Output filename
+    #[structopt(short, default_value = "render.png")]
+    pub output_filename: String,
+}
+
 fn main() {
+    let cli = CliArgs::from_args();
+
     let scene = build_scene();
 
     let opts = RenderOptions {
@@ -151,26 +176,25 @@ fn main() {
         width: 800,
         height: 800,
 
-        max_depth: 10,
-        samples_per_pixel: 20000,
-        threads: 0, // Use number of cpus
+        max_depth: cli.max_depth,
+        samples_per_pixel: cli.samples_per_pixel,
+        threads: cli.threads,
     };
+
+    println!(
+        "Rendering {}x{} at {}spp with max depth {}",
+        opts.width, opts.height, opts.samples_per_pixel, opts.max_depth
+    );
 
     let start = Instant::now();
     let pixels = render(&scene, &opts).unwrap();
     let elapsed = Instant::now() - start;
 
-    println!(
-        "Rendered {}x{} at {}spp in {}s",
-        opts.width,
-        opts.height,
-        opts.samples_per_pixel,
-        elapsed.as_secs_f64()
-    );
+    println!("Rendered in {}s", elapsed.as_secs_f64());
 
     let raw_pixels = img::pixels_to_raw_rgb(pixels.as_ref());
 
-    let mut png = BufWriter::new(File::create("image.png").unwrap());
+    let mut png = BufWriter::new(File::create(&cli.output_filename).unwrap());
     img::write_png(&mut png, raw_pixels.as_ref(), opts.width, opts.height).unwrap();
     png.flush().unwrap();
 }
