@@ -12,8 +12,8 @@ use geom::Sphere;
 use math::Vec3;
 use renderer::*;
 
-fn main() {
-    let scene = Scene::with_primitives(vec![
+fn build_scene() -> Scene<'static> {
+    Scene::with_primitives(vec![
         Primitive::new(
             Sphere::new(
                 Vec3 {
@@ -126,7 +126,11 @@ fn main() {
                 } * 80.0,
             ),
         ),
-    ]);
+    ])
+}
+
+fn main() {
+    let scene = build_scene();
 
     let opts = RenderOptions {
         camera_options: CameraOptions {
