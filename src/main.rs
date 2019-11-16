@@ -8,7 +8,6 @@ use std::fs::File;
 use std::io::*;
 use std::time::Instant;
 
-use quicli::prelude::*;
 use structopt::StructOpt;
 
 use geom::Sphere;
