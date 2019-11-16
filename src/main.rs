@@ -129,10 +129,6 @@ fn main() {
     ]);
 
     let opts = RenderOptions {
-        width: 800,
-        height: 800,
-        max_depth: 10,
-        samples_per_pixel: 20000,
         camera_options: CameraOptions {
             pos: Vec3::default(),
             target: Vec3 {
@@ -147,10 +143,17 @@ fn main() {
             },
             vert_fov: 55.0,
         },
+
+        width: 800,
+        height: 800,
+
+        max_depth: 10,
+        samples_per_pixel: 20000,
+        threads: 0, // Use number of cpus
     };
 
     let start = Instant::now();
-    let pixels = render(&scene, &opts);
+    let pixels = render(&scene, &opts).unwrap();
     let elapsed = Instant::now() - start;
 
     println!(
