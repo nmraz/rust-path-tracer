@@ -151,9 +151,152 @@ fn build_spec_spheres_scene() -> BuiltScene {
     )
 }
 
+fn build_mirror_scene() -> BuiltScene {
+    BuiltScene(
+        Scene::with_primitives(vec![
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 0.0,
+                        y: -100.0,
+                        z: -8.0,
+                    },
+                    100.0,
+                ),
+                Material::make_reflective(
+                    Vec3 {
+                        x: 0.8,
+                        y: 0.8,
+                        z: 0.8,
+                    },
+                    0.5,
+                    0.9,
+                ),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 0.0,
+                        y: 1.0,
+                        z: -4.0,
+                    },
+                    0.75,
+                ),
+                Material::make_reflective(
+                    Vec3 {
+                        x: 0.7,
+                        y: 0.7,
+                        z: 0.7,
+                    },
+                    0.9,
+                    0.99,
+                ),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: -1.7,
+                        y: 1.0,
+                        z: -4.0,
+                    },
+                    0.5,
+                ),
+                Material::make_diffuse(Vec3 {
+                    x: 0.5,
+                    y: 0.0,
+                    z: 0.0,
+                }),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 1.7,
+                        y: 1.0,
+                        z: -4.0,
+                    },
+                    0.5,
+                ),
+                Material::make_diffuse(Vec3 {
+                    x: 0.0,
+                    y: 0.5,
+                    z: 0.0,
+                }),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: -0.7,
+                        y: 2.3,
+                        z: -4.0,
+                    },
+                    0.3,
+                ),
+                Material::make_diffuse(Vec3 {
+                    x: 0.0,
+                    y: 0.0,
+                    z: 1.0,
+                }),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 1.0,
+                        y: 1.8,
+                        z: -3.7,
+                    },
+                    0.1,
+                ),
+                Material::make_light(
+                    Vec3 {
+                        x: 1.0,
+                        y: 1.0,
+                        z: 0.0,
+                    } * 10.0,
+                ),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 0.0,
+                        y: 0.0,
+                        z: 1.0,
+                    },
+                    1.0,
+                ),
+                Material::make_light(
+                    Vec3 {
+                        x: 1.0,
+                        y: 1.0,
+                        z: 1.0,
+                    } * 30.0,
+                ),
+            ),
+        ]),
+        CameraOptions {
+            pos: Vec3 {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            target: Vec3 {
+                x: 0.0,
+                y: 0.0,
+                z: -10.0,
+            },
+            up: Vec3 {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            vert_fov: 55.0,
+        },
+    )
+}
+
 fn build_scene(name: &str) -> Option<BuiltScene> {
     match name {
         "spec-spheres" => Some(build_spec_spheres_scene()),
+        "mirror" => Some(build_mirror_scene()),
         _ => None,
     }
 }
@@ -185,7 +328,7 @@ struct CliArgs {
     #[structopt(short, default_value = "render.png")]
     pub output_filename: String,
 
-    /// Name of scene to render. Currently must be spec-spheres.
+    /// Name of the scene to render. Must be one of spec-spheres or mirror.
     pub scene: String,
 }
 
