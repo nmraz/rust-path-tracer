@@ -18,7 +18,7 @@ use renderer::*;
 
 struct BuiltScene(pub Scene<'static>, pub CameraOptions);
 
-fn build_spec_balls_scene() -> BuiltScene {
+fn build_spec_spheres_scene() -> BuiltScene {
     BuiltScene(
         Scene::with_primitives(vec![
             Primitive::new(
@@ -153,7 +153,7 @@ fn build_spec_balls_scene() -> BuiltScene {
 
 fn build_scene(name: &str) -> Option<BuiltScene> {
     match name {
-        "spec-balls" => Some(build_spec_balls_scene()),
+        "spec-spheres" => Some(build_spec_spheres_scene()),
         _ => None,
     }
 }
@@ -185,7 +185,7 @@ struct CliArgs {
     #[structopt(short, default_value = "render.png")]
     pub output_filename: String,
 
-    /// Name of scene to render. Currently must be spec-balls.
+    /// Name of scene to render. Currently must be spec-spheres.
     pub scene: String,
 }
 
