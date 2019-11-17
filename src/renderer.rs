@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::error;
 use std::f64;
 
 use rand::Rng;
@@ -288,7 +288,7 @@ pub fn render_to(
     scene: &Scene,
     pixels: &mut [Vec3],
     opts: &RenderOptions,
-) -> Result<(), Box<dyn Error + 'static>> {
+) -> Result<(), Box<dyn error::Error + 'static>> {
     assert_eq!(pixels.len(), (opts.width * opts.height) as usize);
 
     let pool = rayon::ThreadPoolBuilder::new()
@@ -324,7 +324,7 @@ pub fn render_to(
 pub fn render(
     scene: &Scene,
     opts: &RenderOptions,
-) -> Result<Box<[Vec3]>, Box<dyn Error + 'static>> {
+) -> Result<Box<[Vec3]>, Box<dyn error::Error + 'static>> {
     let mut pixels = vec![Vec3::default(); (opts.width * opts.height) as usize].into_boxed_slice();
     render_to(scene, &mut pixels, opts)?;
     Ok(pixels)
