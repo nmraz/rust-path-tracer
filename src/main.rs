@@ -4,8 +4,9 @@ mod math;
 mod renderer;
 mod sample;
 
+use std::error::Error;
 use std::fs::File;
-use std::io::*;
+use std::io::{BufWriter, Write};
 use std::time::Instant;
 
 use structopt::StructOpt;
@@ -151,7 +152,7 @@ struct CliArgs {
     pub output_filename: String,
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error + 'static>> {
     let cli = CliArgs::from_args();
 
     let scene = build_scene();
@@ -186,14 +187,16 @@ fn main() {
     );
 
     let start = Instant::now();
-    let pixels = render(&scene, &opts).unwrap();
+    let pixels = render(&scene, &opts)?;
     let elapsed = Instant::now() - start;
 
     println!("Rendered in {}s", elapsed.as_secs_f64());
 
     let raw_pixels = img::pixels_to_raw_rgb(pixels.as_ref());
 
-    let mut png = BufWriter::new(File::create(&cli.output_filename).unwrap());
-    img::write_png(&mut png, raw_pixels.as_ref(), opts.width, opts.height).unwrap();
-    png.flush().unwrap();
+    let mut png = BufWriter::new(File::create(&cli.output_filename)?);
+    img::write_png(&mut png, raw_pixels.as_ref(), opts.width, opts.height)?;
+    png.flush()?;
+
+    Ok(())
 }
