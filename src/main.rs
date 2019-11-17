@@ -138,7 +138,7 @@ struct CliArgs {
     pub max_depth: u32,
 
     /// Number of samples to gather per pixel
-    #[structopt(long, short)]
+    #[structopt(long = "spp")]
     pub samples_per_pixel: u32,
 
     /// Number of threads to use when rendering in parallel.
