@@ -178,15 +178,21 @@ struct CliArgs {
     /// Output filename
     #[structopt(short, default_value = "render.png")]
     pub output_filename: String,
+
+    /// Name of scene to render. Currently must be spec-balls.
+    pub scene: String,
 }
 
 fn main() -> Result<(), Box<dyn error::Error + 'static>> {
     let cli = CliArgs::from_args();
 
-    let (scene, camera_options) = match build_scene("spec-balls") {
+    let (scene, camera_options) = match build_scene(&cli.scene) {
         Some(scene) => scene,
         None => {
-            eprintln!("error: Unknown scene '{}'", "");
+            eprintln!(
+                "error: Unknown scene '{}'\n\nFor more information try --help",
+                cli.scene
+            );
             process::exit(1);
         }
     };
@@ -203,8 +209,8 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
     };
 
     println!(
-        "Rendering {}x{} at {}spp with max depth {}",
-        opts.width, opts.height, opts.samples_per_pixel, opts.max_depth
+        "Rendering {} at {}x{} {}spp with max depth {}",
+        cli.scene, opts.width, opts.height, opts.samples_per_pixel, opts.max_depth
     );
 
     let start = Instant::now();
