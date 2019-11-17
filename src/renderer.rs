@@ -293,8 +293,7 @@ pub fn render_to(
 
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(opts.threads as usize)
-        .build()
-        .map_err(Box::new)?;
+        .build()?;
 
     let cam = Camera::new(&opts.camera_options, opts.width, opts.height);
 
