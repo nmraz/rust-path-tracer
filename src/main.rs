@@ -16,138 +16,144 @@ use geom::Sphere;
 use math::Vec3;
 use renderer::*;
 
-fn build_scene(name: &str) -> Option<(Scene<'static>, CameraOptions)> {
-    match name {
-        "spec-balls" => Some((
-            Scene::with_primitives(vec![
-                Primitive::new(
-                    Sphere::new(
-                        Vec3 {
-                            x: 0.0,
-                            y: 0.0,
-                            z: -6.0,
-                        },
-                        1.0,
-                    ),
-                    Material::make_reflective(
-                        Vec3 {
-                            x: 1.0,
-                            y: 0.0,
-                            z: 0.0,
-                        },
-                        0.83,
-                        0.95,
-                    ),
+struct BuiltScene(pub Scene<'static>, pub CameraOptions);
+
+fn build_spec_balls_scene() -> BuiltScene {
+    BuiltScene(
+        Scene::with_primitives(vec![
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 0.0,
+                        y: 0.0,
+                        z: -6.0,
+                    },
+                    1.0,
                 ),
-                Primitive::new(
-                    Sphere::new(
-                        Vec3 {
-                            x: 0.0,
-                            y: 2.05,
-                            z: -6.0,
-                        },
-                        0.75,
-                    ),
-                    Material::make_reflective(
-                        Vec3 {
-                            x: 0.0,
-                            y: 1.0,
-                            z: 0.0,
-                        },
-                        0.5,
-                        0.95,
-                    ),
+                Material::make_reflective(
+                    Vec3 {
+                        x: 1.0,
+                        y: 0.0,
+                        z: 0.0,
+                    },
+                    0.83,
+                    0.95,
                 ),
-                Primitive::new(
-                    Sphere::new(
-                        Vec3 {
-                            x: 2.05,
-                            y: 0.0,
-                            z: -6.0,
-                        },
-                        0.75,
-                    ),
-                    Material::make_reflective(
-                        Vec3 {
-                            x: 1.0,
-                            y: 1.0,
-                            z: 0.0,
-                        },
-                        0.7,
-                        0.95,
-                    ),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 0.0,
+                        y: 2.05,
+                        z: -6.0,
+                    },
+                    0.75,
                 ),
-                Primitive::new(
-                    Sphere::new(
-                        Vec3 {
-                            x: 0.0,
-                            y: -2.05,
-                            z: -6.0,
-                        },
-                        0.75,
-                    ),
-                    Material::make_reflective(
-                        Vec3 {
-                            x: 0.0,
-                            y: 0.0,
-                            z: 1.0,
-                        },
-                        0.6,
-                        0.95,
-                    ),
+                Material::make_reflective(
+                    Vec3 {
+                        x: 0.0,
+                        y: 1.0,
+                        z: 0.0,
+                    },
+                    0.5,
+                    0.95,
                 ),
-                Primitive::new(
-                    Sphere::new(
-                        Vec3 {
-                            x: -2.05,
-                            y: 0.0,
-                            z: -6.0,
-                        },
-                        0.75,
-                    ),
-                    Material::make_reflective(
-                        Vec3 {
-                            x: 0.0,
-                            y: 1.0,
-                            z: 1.0,
-                        },
-                        0.4,
-                        0.95,
-                    ),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 2.05,
+                        y: 0.0,
+                        z: -6.0,
+                    },
+                    0.75,
                 ),
-                Primitive::new(
-                    Sphere::new(
-                        Vec3 {
-                            x: 3.0,
-                            y: 3.0,
-                            z: 1.1,
-                        },
-                        1.0,
-                    ),
-                    Material::make_light(
-                        Vec3 {
-                            x: 1.0,
-                            y: 1.0,
-                            z: 1.0,
-                        } * 80.0,
-                    ),
+                Material::make_reflective(
+                    Vec3 {
+                        x: 1.0,
+                        y: 1.0,
+                        z: 0.0,
+                    },
+                    0.7,
+                    0.95,
                 ),
-            ]),
-            CameraOptions {
-                pos: Vec3::default(),
-                target: Vec3 {
-                    x: 0.0,
-                    y: 0.0,
-                    z: -1.0,
-                },
-                up: Vec3 {
-                    x: 0.0,
-                    y: 1.0,
-                    z: 0.0,
-                },
-                vert_fov: 55.0,
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 0.0,
+                        y: -2.05,
+                        z: -6.0,
+                    },
+                    0.75,
+                ),
+                Material::make_reflective(
+                    Vec3 {
+                        x: 0.0,
+                        y: 0.0,
+                        z: 1.0,
+                    },
+                    0.6,
+                    0.95,
+                ),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: -2.05,
+                        y: 0.0,
+                        z: -6.0,
+                    },
+                    0.75,
+                ),
+                Material::make_reflective(
+                    Vec3 {
+                        x: 0.0,
+                        y: 1.0,
+                        z: 1.0,
+                    },
+                    0.4,
+                    0.95,
+                ),
+            ),
+            Primitive::new(
+                Sphere::new(
+                    Vec3 {
+                        x: 3.0,
+                        y: 3.0,
+                        z: 1.1,
+                    },
+                    1.0,
+                ),
+                Material::make_light(
+                    Vec3 {
+                        x: 1.0,
+                        y: 1.0,
+                        z: 1.0,
+                    } * 80.0,
+                ),
+            ),
+        ]),
+        CameraOptions {
+            pos: Vec3::default(),
+            target: Vec3 {
+                x: 0.0,
+                y: 0.0,
+                z: -1.0,
             },
-        )),
+            up: Vec3 {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            vert_fov: 55.0,
+        },
+    )
+}
+
+fn build_scene(name: &str) -> Option<BuiltScene> {
+    match name {
+        "spec-balls" => Some(build_spec_balls_scene()),
         _ => None,
     }
 }
@@ -186,7 +192,7 @@ struct CliArgs {
 fn main() -> Result<(), Box<dyn error::Error + 'static>> {
     let cli = CliArgs::from_args();
 
-    let (scene, camera_options) = match build_scene(&cli.scene) {
+    let BuiltScene(scene, camera_options) = match build_scene(&cli.scene) {
         Some(scene) => scene,
         None => {
             eprintln!(
