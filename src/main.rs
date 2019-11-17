@@ -134,6 +134,14 @@ fn build_scene() -> Scene<'static> {
 
 #[derive(StructOpt)]
 struct CliArgs {
+    /// Width of rendered image, in pixels
+    #[structopt(long, short)]
+    pub width: u32,
+
+    /// Height of rendered image, in pixels
+    #[structopt(long, short)]
+    pub height: u32,
+
     /// Maximum bounce depth
     #[structopt(long, default_value = "5")]
     pub max_depth: u32,
@@ -173,8 +181,8 @@ fn main() -> Result<(), Box<dyn Error + 'static>> {
             vert_fov: 55.0,
         },
 
-        width: 800,
-        height: 800,
+        width: cli.width,
+        height: cli.height,
 
         max_depth: cli.max_depth,
         samples_per_pixel: cli.samples_per_pixel,
